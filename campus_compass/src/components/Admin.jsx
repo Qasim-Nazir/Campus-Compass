@@ -10,7 +10,7 @@ const Admin = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch('https://mi-linux.wlv.ac.uk/~2332813/demo/index.php?q=OpenDayLectures');
+                const response = await fetch('https://mi-linux.wlv.ac.uk/~2332813/demo/server/index.php?q=OpenDayLectures');
                 const data = await response.json();
                 setjsonScheduleData(data);
             } catch (error) {
@@ -43,7 +43,7 @@ const Admin = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch('https://mi-linux.wlv.ac.uk/~2332813/demo/index.php?q=Classrooms');
+                const response = await fetch('https://mi-linux.wlv.ac.uk/~2332813/demo/server/index.php?q=Classrooms');
                 const data = await response.json();
                 setjsonClassroomData(data);
             } catch (error) {
@@ -74,7 +74,7 @@ const Admin = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch('https://mi-linux.wlv.ac.uk/~2332813/demo/index.php?q=Teachers');
+                const response = await fetch('https://mi-linux.wlv.ac.uk/~2332813/demo/server/index.php?q=Teachers');
                 const data = await response.json();
                 setjsonLecturerData(data);
             } catch (error) {
@@ -117,7 +117,7 @@ const Admin = () => {
         document.getElementById('course_id').value = '';
         // Send the new schedule to the server
 
-         fetch('https://mi-linux.wlv.ac.uk/~2332813/demo/post.php?q=Schedule', {
+         fetch('https://mi-linux.wlv.ac.uk/~2332813/demo/server/post.php?q=Schedule', {
              method: 'POST',
              headers: {
                  'Content-Type': 'application/json'
@@ -148,7 +148,7 @@ const Admin = () => {
         document.getElementById('capacity').value = '';
         document.getElementById('course_c_id').value = '';
         // Send the new classroom to the server
-        fetch('https://mi-linux.wlv.ac.uk/~2332813/demo/post.php?q=Classrooms', {
+        fetch('https://mi-linux.wlv.ac.uk/~2332813/demo/server/post.php?q=Classrooms', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -178,7 +178,7 @@ const Admin = () => {
         document.getElementById('email').value = '';
         document.getElementById('course_l_id').value = '';
         // Send the new lecturer to the server
-        fetch('https://mi-linux.wlv.ac.uk/~2332813/demo/post.php?q=Teachers', {
+        fetch('https://mi-linux.wlv.ac.uk/~2332813/demo/server/post.php?q=Teachers', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -198,10 +198,9 @@ const Admin = () => {
     const handleDeleteSchedule = (id) => {
         // Logic to delete a schedule
         console.log(id);
-        fetch(`https://mi-linux.wlv.ac.uk/~2332813/demo/delete.php?q=OpenDayLectures&id=${id}`, {
+        fetch(`https://mi-linux.wlv.ac.uk/~2332813/demo/server/delete.php?q=OpenDayLectures&id=${id}`, {
             method: 'DELETE',
             headers: {
-                allowCrossOrigin: true,
                 'Content-Type': 'application/json'
             },
         })
@@ -217,8 +216,11 @@ const Admin = () => {
     const handleDeleteClassroom = (id) => {
         // Logic to delete a classroom
         console.log(id);
-        fetch(`https://mi-linux.wlv.ac.uk/~2332813/demo/delete.php?q=Classrooms&id=${id}`, {
+        fetch(`http://localhost/server/delete.php?q=Classrooms&id=${id}`, {
             method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
         })
             .then(response => response.json())
             .then(data => {
@@ -232,7 +234,7 @@ const Admin = () => {
     const handleDeleteLecturer = (id) => {
         // Logic to delete a lecturer
         console.log(id);
-        fetch(`https://mi-linux.wlv.ac.uk/~2332813/demo/delete.php?q=Teachers&id=${id}`, {
+        fetch(`https://mi-linux.wlv.ac.uk/~2332813/demo/server/delete.php?q=Teachers&id=${id}`, {
             method: 'DELETE',
         })
             .then(response => response.json())
@@ -256,6 +258,7 @@ const Admin = () => {
 
                 <h2>Manage Schedule</h2>
 
+                <div style={styles.tableContainer}>
                 <table style={styles.table}>
                     <thead style={styles.thead}>
                         <tr>
@@ -277,10 +280,12 @@ const Admin = () => {
                             <td><button onClick={() => handleAddSchedule()}>Add</button></td>
                         </tr>
                     </tbody>
-                </table>
+                    </table>
+                </div>
 
                 <h2>Manage Rooms</h2>
 
+                <div style={styles.tableContainer}>
                 <table style={styles.table}>
                     <thead style={styles.thead}>
                     <tr>
@@ -302,10 +307,12 @@ const Admin = () => {
                             <td><button onClick={() => handleAddClassroom()}>Add</button></td>
                         </tr>
                 </tbody>
-                </table>
+                    </table>
+                </div>
 
                 <h2>Manage Lecturers</h2>
 
+                <div style={styles.tableContainer}>
                 <table style={styles.table}>
                     <thead style={styles.thead}>
                         <tr>
@@ -325,7 +332,8 @@ const Admin = () => {
                             <td><button onClick={() => handleAddLecturer()}>Add</button></td>
                         </tr>
                     </tbody>
-                </table>
+                    </table>
+                </div>
 
             </div>
         </div>
@@ -345,8 +353,15 @@ const styles = {
         borderCollapse: 'collapse',
         borderRadius: '8px',
         boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-
     },
+
+    // Scrollable container for the table
+    tableContainer: {
+        overflowX: 'auto', // Enables horizontal scrolling
+        width: '100%',
+        maxWidth: '100vw', // Allows full viewport width
+    },
+
     thead: {
         backgroundColor: '#f2f2f2',
         borderBottom: '2px solid #ddd',
